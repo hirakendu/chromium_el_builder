@@ -1,6 +1,9 @@
+notes.txt
 depot_tools
 chromium_build*
-chromium-*
+rpmbuild
+chromium*.tgz
+\!chromium*.rpm
 google*
-notes_chromium.txt
+blog.txt
 

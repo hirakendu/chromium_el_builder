@@ -1,41 +1,43 @@
-This project provides shell scripts for building RPM package
-for Chromium web-browser on Enterprise Linux distributions like CentOS.
+This project provides shell scripts for building an RPM package
+of Chromium web-browser on Enterprise Linux distributions like CentOS.
 Currently, it can be used for building Chromium 26 or 27 on
 CentOS 6.4 and the resulting RPM should be installed on any EL 6.
 
 Please read the details section before using the build script to learn about
 the heavy system requirements and to customize the version, features and keys.
-To create an RPM package of Chromium, simply run the build script.
+To create an RPM package of Chromium, simply run the build script,
   $ bash chromium_builder.sh
+.
 
-Install the generated RPM using rpm or yum.
+Install the generated RPM using rpm or yum,
   $ sudo yum install chromium-26.0.1410.63-192696.el6.x86_64.rpm
-The application is installed to /opt/chromium/ and the desktop file is
-at /usr/share/applications/chromium.desktop. An application menu entry
+. The application is installed to /opt/chromium/ and the desktop file is
+at /usr/share/applications/chromium-devel.desktop. An application menu entry
 for Chromium browser should be generated in the Internet category.
 
-The package installs the Chromium open source web browser and doesn't include
+The package installs the Chromium open source web browser and does not include
 the addtional proprietary parts of Google Chrome. It can use the system plugins
 for Flash and Java. To install the PDF plugin of Google Chrome, the libpdf.so
 file can be copied from an existing Chrome installation or by using the
 included helper script that downloads an RPM of Google Chrome, and extracts
-and copies the libpdf.so.
+and copies the libpdf.so,
   $ bash chrome_libpdf_copy.sh
-Another helper script is provided to install PepperFlash.
+. Another helper script is provided to install PepperFlash,
   $ bash chrome_pepperflash_copy.sh
+.
 
 Details:
 ========
 
-The script chromium_builder.sh is mostly self-explanatory, additional
-details are provided here for completeness. It installs pre-requisite packages,
-downloads chromium source code and builds it according to instructions in
+The script chromium_builder.sh is mostly self-explanatory with inline comments,
+additional details are provided here for completeness.
+It installs pre-requisite packages, downloads chromium source code
+and builds it according to instructions in
   https://code.google.com/p/chromium/wiki/LinuxBuildInstructions
 . It also creates an installable RPM package after the build.
 
 If no version information is provided, the internally hard-coded default
-version (currently 26.0.1410.63) is used. To build a specific version,
-use for e.g.,
+version (currently 26.0.1410.63) is used. To build a specific version, use e.g.,
   $ CHROMIUM_VERSION=27.0.1453.15 bash chromium_builder.sh
 . The various current versions can be found at
   http://omahaproxy.appspot.com/
@@ -58,7 +60,7 @@ other dependencies
   subversion git git-svn libgnome-keyring-devel cups-devel libXtst-devel libXt-devel pam-devel
 for EL are installed. The dependency on speech-dispatcher application
 and libraries is satsified by installing RPMs in speech_dispatcher/ folder,
-obtained from
+blatantly obtained from
   http://li.nux.ro/download/nux/dextop/el6/x86_64/
 .
 
@@ -98,19 +100,25 @@ to load. The upside is few installation dependencies(?).
 
 While the tar archive can be extracted to the system, an RPM package
 is created from the archive using the script chromium_rpm_packager.sh.
+Temporary files are kept in the folder rpmbuild/.
 The RPM package has name=chromium, version=${CHROMIUM_VERSION},
 e.g., 26.0.1410.63, and release version that equals the SVN revision
 (as can be found using the revision lookup tool at
-http://omahaproxy.appspot.com/). The current RPM generated is
-chromium-26.0.1410.63-192696.x86_64.rpm.
+http://omahaproxy.appspot.com/). This is similar to the convention
+used for the official Google Chrome RPM packages at
+  https://www.google.com/intl/en/chrome/browser/
+. The current RPM generated is chromium-26.0.1410.63-192696.x86_64.rpm.
 
-The generated rpm can be installed using yum. Proprietary addons can be
+The generated RPM can be installed using yum. Proprietary addons can be
 installed separately using helper scripts or otherwise, as mentioned
-in the introduction.
+in the introduction. The scripts can use the environment variables
+CHANNEL (stable|beta|dev) or CHROMIUM_VERSION (if currently
+present in repository) as parameters.
+
+The final disk space used is ~ 7.5 GB.
 
 Misc:
 =====
-Credits: various inline references.
+Credits: various inline references
 Copyright: Hirakendu Das, 2013
 License: BSD 3-clause
-

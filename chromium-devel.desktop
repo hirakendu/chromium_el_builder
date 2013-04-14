@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Chromium
+GenericName=Web Browser
+Exec=/opt/chromium/chrome-wrapper %U
+Terminal=false
+Icon=/opt/chromium/product_logo_48.png
+Type=Application
+Categories=Application;Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml_xml;
