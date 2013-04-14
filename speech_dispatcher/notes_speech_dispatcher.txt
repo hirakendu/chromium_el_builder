@@ -1,0 +1,8 @@
+RPMs are from  http://li.nux.ro/download/nux/dextop/el6/x86_64/.
+
+  # yum install festival-freebsoft-utils-0.10-1.el6.nux.noarch.rpm
+  # yum install dotconf-1.3-2.el6.nux.x86_64.rpm
+  # yum install speech-dispatcher-0.7.1-5.el6.nux.x86_64.rpm
+  # yum install speech-dispatcher-devel-0.7.1-5.el6.nux.x86_64.rpm
+
+

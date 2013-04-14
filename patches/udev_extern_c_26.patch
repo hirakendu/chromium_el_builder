@@ -1,0 +1,48 @@
+--- src/chrome/browser/system_monitor/udev_util_linux.h	2013-02-22 01:04:36.000000000 -0800
++++ src/chrome/browser/system_monitor/udev_util_linux.h	2013-04-06 22:35:05.445615937 -0700
+@@ -5,7 +5,9 @@
+ #ifndef CHROME_BROWSER_STORAGE_MONITOR_UDEV_UTIL_LINUX_H_
+ #define CHROME_BROWSER_STORAGE_MONITOR_UDEV_UTIL_LINUX_H_
+ 
++extern "C" {
+ #include <libudev.h>
++}
+ 
+ #include <string>
+ 
+--- src/content/browser/udev_linux.cc	2013-01-23 01:01:22.000000000 -0800
++++ src/content/browser/udev_linux.cc	2013-04-06 22:43:36.287615528 -0700
+@@ -4,7 +4,9 @@
+ 
+ #include "content/browser/udev_linux.h"
+ 
++extern "C" {
+ #include <libudev.h>
++}
+ 
+ #include "base/message_loop.h"
+ 
+--- src/content/browser/gamepad/gamepad_platform_data_fetcher_linux.cc	2012-11-29 01:01:12.000000000 -0800
++++ src/content/browser/gamepad/gamepad_platform_data_fetcher_linux.cc	2013-04-06 22:46:42.234615375 -0700
+@@ -5,7 +5,9 @@
+ #include "content/browser/gamepad/gamepad_platform_data_fetcher_linux.h"
+ 
+ #include <fcntl.h>
++extern "C" {
+ #include <libudev.h>
++}
+ #include <linux/joystick.h>
+ #include <string.h>
+ #include <sys/stat.h>
+--- src/content/browser/device_monitor_linux.cc	2012-10-31 01:01:00.000000000 -0700
++++ src/content/browser/device_monitor_linux.cc	2013-04-07 02:02:19.484605597 -0700
+@@ -6,7 +6,9 @@
+ 
+ #include "content/browser/device_monitor_linux.h"
+ 
++extern "C" {
+ #include <libudev.h>
++}
+ 
+ #include <string>
+ 

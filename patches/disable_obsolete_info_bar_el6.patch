@@ -1,0 +1,11 @@
+--- src/chrome/browser/ui/startup/obsolete_os_info_bar.cc.old	2013-03-20 01:01:08.000000000 -0700
++++ src/chrome/browser/ui/startup/obsolete_os_info_bar.cc	2013-04-06 23:25:16.308613443 -0700
+@@ -32,7 +32,7 @@
+   //   Ubuntu Lucid:       GTK 2.20
+   //   openSUSE 12.2       GTK 2.24
+   //   Ubuntu Precise:     GTK 2.24
+-  if (!gtk_check_version(2, 24, 0))
++  if (!gtk_check_version(2, 18, 0))
+     return;
+ #else
+   // No other platforms currently show this infobar.

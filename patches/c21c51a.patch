@@ -1,0 +1,32 @@
+From c21c51a6fce878a4625c30032e669660ce6cbcaf Mon Sep 17 00:00:00 2001
+From: Ben Noordhuis <info@bnoordhuis.nl>
+Date: Fri, 20 Apr 2012 01:28:54 +0200
+Subject: [PATCH] v8: fix "pure virtual method called" runtime error
+
+Fixes #2912.
+---
+ deps/v8/build/common.gypi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/deps/v8/build/common.gypi b/deps/v8/build/common.gypi
+index f2bb465..4577b13 100644
+--- a/v8/build/common.gypi
++++ b/v8/build/common.gypi
+@@ -271,6 +271,14 @@
+           }],
+           [ 'v8_no_strict_aliasing==1', {
+             'cflags': [ '-fno-strict-aliasing' ],
++          }, {
++            # gcc 4.4.6 has a regression in non-strict aliasing mode that
++            # makes a lookup in CodeStub::FindCodeInCache() abort with a
++            # "pure virtual method called" runtime error.
++            #
++            # This bites node.js because it sets -fno-strict-aliasing in its
++            # cflags, which then leak into our cflags.
++            'cflags!': [ '-fno-strict-aliasing' ],
+           }],
+         ],  # conditions
+       }],
+-- 
+1.8.1.5
+

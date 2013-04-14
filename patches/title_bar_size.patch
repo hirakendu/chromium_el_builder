@@ -1,0 +1,11 @@
+--- src/chrome/browser/ui/gtk/browser_titlebar.cc	2013-04-07 00:19:32.000000000 -0700
++++ src/chrome/browser/ui/gtk/browser_titlebar.cc	2013-04-07 00:24:58.680610451 -0700
+@@ -62,7 +62,7 @@
+ namespace {
+ 
+ // The space above the titlebars.
+-const int kTitlebarHeight = 14;
++const int kTitlebarHeight = 18;
+ 
+ // The thickness in pixels of the tab border.
+ const int kTabOuterThickness = 1;
