@@ -3,8 +3,6 @@ depot_tools
 chromium_build
 chromium_build.tgz
 rpmbuild
-\!chromium*.rpm
-chromium-*
 google*
 blog.txt
 
