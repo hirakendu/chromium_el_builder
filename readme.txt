@@ -2,6 +2,9 @@ This project provides shell scripts for building an RPM package
 of Chromium web-browser on Enterprise Linux distributions like CentOS.
 Currently, it can be used for building Chromium 26 or 27 on
 CentOS 6.4 and the resulting RPM should be installed on any EL 6.
+Some recent builds, maintained infrequently, are available at
+  http://chromium-el.mooo.com
+.
 
 Please read the details section before using the build script to learn about
 the heavy system requirements and to customize the version, features and keys.
@@ -16,7 +19,7 @@ at /usr/share/applications/chromium-devel.desktop. An application menu entry
 for Chromium browser should be generated in the Internet category.
 
 The package installs the Chromium open source web browser and does not include
-the addtional proprietary parts of Google Chrome. It can use the system plugins
+the additional proprietary parts of Google Chrome. It can use the system plugins
 for Flash and Java. To install the PDF plugin of Google Chrome, the libpdf.so
 file can be copied from an existing Chrome installation or by using the
 included helper script that downloads an RPM of Google Chrome, and extracts
@@ -68,7 +71,8 @@ The source code is downloaded from SVN for the specified version, as outlined in
   http://dev.chromium.org/developers/how-tos/get-the-code
 . This is a fairly large download of ~ 1.2 GB over the internet and ~ 5.4 GB of
 disk space. It takes about 20 minutes on a fast 100 Mbps, low latency (3ms)
-connection. The source code is kept at folder chromium_build and archived
+connection or 30 minutes on a slower 10 Mbps connection.
+The source code is kept at folder chromium_build and archived
 to chromium_build.tgz, ~ 1.5 GB, for future reuse.
 
 The configuration is mostly default with provided API keys and proprietary
@@ -111,9 +115,11 @@ used for the official Google Chrome RPM packages at
 
 The generated RPM can be installed using yum. Proprietary addons can be
 installed separately using helper scripts or otherwise, as mentioned
-in the introduction. The scripts can use the environment variables
-CHANNEL (stable|beta|dev) or CHROMIUM_VERSION (if currently
-present in repository) as parameters.
+in the introduction. The PepperFlash script is adapted from
+http://www.webupd8.org/2012/09/how-to-make-chromium-use-flash-player.html.
+The scripts can use the environment variables CHANNEL (stable|beta|dev)
+or CHROMIUM_VERSION (if currently present in Google Chrome repository)
+as parameters.
 
 The final disk space used is ~ 7.5 GB.
 

@@ -2,7 +2,8 @@ notes.txt
 depot_tools
 chromium_build
 chromium_build.tgz
+chromium-*.rpm
 rpmbuild
 google*
 blog.txt
-
+index.html
