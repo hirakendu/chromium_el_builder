@@ -1,0 +1,11 @@
+--- src/chrome/browser/ui/startup/obsolete_os_infobar_delegate.cc.orig	2013-06-07 21:41:39.000000000 -0500
++++ src/chrome/browser/ui/startup/obsolete_os_infobar_delegate.cc	2013-06-07 23:52:32.016121277 -0500
+@@ -32,7 +32,7 @@ void ObsoleteOSInfoBarDelegate::Create(I
+   //   Ubuntu Lucid:       GTK 2.20
+   //   openSUSE 12.2       GTK 2.24
+   //   Ubuntu Precise:     GTK 2.24
+-  if (!gtk_check_version(2, 24, 0))
++  if (!gtk_check_version(2, 18, 0))
+     return;
+ #else
+   // No other platforms currently show this infobar.
