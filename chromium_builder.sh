@@ -8,7 +8,7 @@
 # to find current stable version, true branch and branch revision.
 # Use the revision lookup tool to verify branch revision.
 if [ -z "${CHROMIUM_VERSION}" ]; then
-  CHROMIUM_VERSION="26.0.1410.63"
+  CHROMIUM_VERSION="28.0.1500.36"
 fi
 # CHROMIUM_SVN_BRANCH="1410"
 # CHROMIUM_SVN_REVISION="192696"
@@ -32,31 +32,35 @@ if [ -z "${GOOGLE_API_KEY}" ]; then
   GOOGLE_DEFAULT_CLIENT_SECRET="${GOOGLE_DEFAULT_CLIENT_SECRET_HDAS}"
 fi
 
+ARCH="$(uname -i)"
 
 # 1. Install prerequisites.
 echo -e "\n\n1. Installing pre-requisite dependencies.\n"
 # 1.1. Install dependencies listed in
 # https://code.google.com/p/chromium/wiki/LinuxBuildInstructionsPrerequisites.
 echo -e "\n1.1. Installing main pre-requisites\n"
-sudo yum install subversion git git-svn pkgconfig python perl gcc-c++ bison \
+sudo yum install -y subversion git git-svn pkgconfig python perl gcc-c++ bison \
     flex gperf nss-devel nspr-devel gtk2-devel glib2-devel freetype-devel \
     atk-devel pango-devel cairo-devel fontconfig-devel GConf2-devel \
     dbus-devel alsa-lib-devel libX11-devel expat-devel bzip2-devel \
     dbus-glib-devel elfutils-libelf-devel libjpeg-devel \
     mesa-libGLU-devel libXScrnSaver-devel \
-    libgnome-keyring-devel cups-devel libXtst-devel libXt-devel pam-devel
+    cups-devel libXtst-devel libXt-devel pam-devel 
+if [ "${ARCH}" == "x86_64" ]; then
+    sudo yum install -y glibc.i686 libstdc++.i686 
+fi
 # 1.2. Install additional dependencies found later on while configuring:
 # yum whatprovides */libpci.pc
 # yum whatprovides */gnome-keyring-1.pc
 # yum whatprovides */libudev.pc
 # yum whatprovides */libpulse.pc
 echo -e "\n1.2. Installing additional pre-requisites\n"
-    pciutils-devel libpciaccess-devel gnome-keyring-devel libudev-devel \
+sudo yum install -y pciutils-devel libpciaccess-devel gnome-keyring-devel libudev-devel \
     pulseaudio-libs-devel
 # 1.3. Install speech_dispatcher dependencies from
 # http://li.nux.ro/download/nux/dextop/el6/x86_64/.
 echo -e "\n1.3. Installing speech-dispatcher\n"
-sudo yum install speech_dispatcher/*
+sudo yum install -y speech_dispatcher/*
 
 
 # 2. Get source code.
@@ -72,7 +76,7 @@ echo -e "\n2.2 Downloading the chromium source from SVN, ~1.2 GB (5.4 GB expande
 rm -rf chromium_build
 if [ -f chromium_build.tgz ]; then
   # Re-use existing source archive if possible.
-  tar -xzf chromium_build.tgz
+  time tar -xzf chromium_build.tgz
   cd chromium_build
 else
   mkdir chromium_build && cd chromium_build
@@ -114,14 +118,11 @@ CHROMIUM_SVN_REVISION="$(svn info  | grep Revision | cut -f2 -d: | sed s/\ //)"
 
 # 3. Build source code.
 echo -e "\n\n3. Building chromium source code.\n"
-# 3.1. Configure.
-echo -e "\n3.1. Configuring, ~ 1 minute.\n"
-time build/gyp_chromium -Dgoogle_api_key="${GOOGLE_API_KEY}" -Dgoogle_default_client_id="${GOOGLE_DEFAULT_CLIENT_ID}" -Dgoogle_default_client_secret="${GOOGLE_DEFAULT_CLIENT_SECRET}" -Dproprietary_codecs=1 -Dffmpeg_branding=Chrome
-# 3.2. Patch.
-echo -e "\n3.2. Patching.\n"
+# 3.1. Patch.
+echo -e "\n3.1. Patching.\n"
 # This patch is required to compile with gcc-4.4.
 # From http://code.google.com/p/v8/issues/detail?id=2093.
-patch -p1 < ../../patches/c21c51a.patch
+patch -p1 < ../../patches/c21c51a-new.patch
 # This patch includes gtk compatibility headers for older GTK versions.
 patch -p1 < ../../patches/gtk_compat.patch
 major_version="$(echo $CHROMIUM_VERSION | cut -f1 -d.)"
@@ -133,12 +134,15 @@ else
   patch -p1 < ../../patches/udev_extern_c.patch
   # Patch to disable warning message for GTK versions older than 2.20.0.
   # EL6 uses GTK 2.18.x.
-  patch -p1 < ../../patches/disable_obsolete_info_bar_el6.patch
+  patch -p1 < ../../patches/disable_os_info_bar_el6.patch
 fi
 # This optional patch increases the space above tab bar by 4 pixels,
 # to aid in moving the window by dragging the window.
 patch -p1 < ../../patches/title_bar_size.patch
-# 3.2. Compile.
+# 3.2. Configure.
+echo -e "\n3.2. Configuring, ~ 1 minute.\n"
+time build/gyp_chromium -Dgoogle_api_key="${GOOGLE_API_KEY}" -Dgoogle_default_client_id="${GOOGLE_DEFAULT_CLIENT_ID}" -Dgoogle_default_client_secret="${GOOGLE_DEFAULT_CLIENT_SECRET}" -Dproprietary_codecs=1 -Dffmpeg_branding=Chrome
+# 3.3. Compile.
 echo -e "\n3.3. Compiling, ~80 minutes and expands to 7.4 GB.\n"
 time make -j4 BUILDTYPE=Release V=1 chrome
 # 3.4 Package tar.
