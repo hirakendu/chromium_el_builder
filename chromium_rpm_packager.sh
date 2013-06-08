@@ -13,7 +13,11 @@ fi
 
 # Create and setup the ~/rpmbuild directory.
 # rpmdev-setuptree
-mkdir -p ./rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+if [ -e rpmbuild ]; then
+rm -rf rpmbuild
+fi 
+
+mkdir -p ./rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS,BUILDROOT}
 
 # Generate the RPM spec file.
 echo -e "\nGenerating spec file ./rpmbuild/SPECS/chromium-${CHROMIUM_VERSION}.spec.\n"
@@ -22,7 +26,8 @@ Name: chromium
 Version: ${CHROMIUM_VERSION}
 Release: ${CHROMIUM_SVN_REVISION}
 Summary: Chromium open source web browser
-License: BSD
+License: BSD and LGPLv2+
+Group:   Applications/Internet
 Url: http://code.google.com/p/chromium/
 Source: %{name}-%{version}.tgz
 
@@ -36,10 +41,10 @@ Chromium is an open-source browser project that aims to build a safer, faster, a
 %build
 
 %install
-mkdir %{buildroot}
 cp -a * %{buildroot}/
 
 %files
+%defattr(-,root,root,-)
 /opt/chromium
 /usr/share/applications/chromium-devel.desktop
 EOF
@@ -56,7 +61,7 @@ fi
 
 # Build RPM.
 echo -e "\nBuilding RPM ./rpmbuild/RPMS/x86_64/chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.x86_64.rpm.\n"
-rpmbuild --quiet --define '_topdir %(pwd)/rpmbuild' -bb ./rpmbuild/SPECS/chromium-${CHROMIUM_VERSION}.spec
+rpmbuild --quiet --define "_topdir $(pwd)/rpmbuild"  --define 'debug_package %{nil}' -bb ./rpmbuild/SPECS/chromium-${CHROMIUM_VERSION}.spec
 
 # Copy generated RPM to this folder.
 echo -e "\nGenerated RPM chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.x86_64.rpm.\n"
