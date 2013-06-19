@@ -68,7 +68,7 @@ other dependencies
 for EL are installed. The dependency on speech-dispatcher application
 and libraries is satsified by installing RPMs in speech_dispatcher/ folder,
 obtained (with permission) from:
-  http://li.nux.ro/download/nux/dextop/el6/x86_64/
+  http://li.nux.ro/download/nux/dextop/el6/
 
 
 The source code is downloaded from SVN for the specified version, as outlined in
