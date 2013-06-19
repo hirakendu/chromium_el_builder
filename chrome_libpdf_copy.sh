@@ -17,7 +17,9 @@ else
   VERSION_RELEASE="_current_"
 fi
 
-RPM_FILE="google-chrome-${CHANNEL}${VERSION_RELEASE}x86_64.rpm"
+ARCH="$(uname -i)"
+
+RPM_FILE="google-chrome-${CHANNEL}${VERSION_RELEASE}${ARCH}.rpm"
 
 # 1. Download Google Chrome.
 echo -e "\n1. Downloading Google Chrome.\n"
@@ -26,7 +28,7 @@ if [ -f "${RPM_FILE}" ]; then
 else
   echo -e "\nDownloading ${RPM_FILE}, ~ 55 MB.\n"
   if [ -n "${CHROMIUM_VERSION}" ]; then
-    curl "https://dl.google.com/linux/chrome/rpm/stable/x86_64/${RPM_FILE}" -o "${RPM_FILE}"
+    curl "https://dl.google.com/linux/chrome/rpm/stable/${ARCH}/${RPM_FILE}" -o "${RPM_FILE}"
   else
     curl "https://dl.google.com/linux/direct/${RPM_FILE}" -o "${RPM_FILE}"
   fi
