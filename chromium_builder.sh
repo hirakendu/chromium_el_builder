@@ -60,8 +60,11 @@ sudo yum install -y pciutils-devel libpciaccess-devel gnome-keyring-devel libude
 # 1.3. Install speech_dispatcher dependencies from
 # http://li.nux.ro/download/nux/dextop/el6/x86_64/.
 echo -e "\n1.3. Installing speech-dispatcher\n"
-sudo yum install -y speech_dispatcher/*
-
+if [ "${ARCH}" == "x86_64" ]; then
+     sudo yum install -y speech_dispatcher/*.x86_64* speech_dispatcher/*.noarch*
+elif [ "${ARCH}" == "i386" ]; then
+     sudo yum install -y speech_dispatcher/*.i686* speech_dispatcher/*.noarch*
+fi
 
 # 2. Get source code.
 echo -e "\n\n2. Getting chromium source code.\n"
