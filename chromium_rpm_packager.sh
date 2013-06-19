@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ARCH="$(uname -i)"
+
 if [ -z "${CHROMIUM_VERSION}" ]; then
   CHROMIUM_VERSION="26.0.1410.63"
   CHROMIUM_SVN_REVISION="0"
@@ -8,7 +10,7 @@ fi
 # Install rpm-build if not already installed.
 if [ -n "$(rpm -q rpm-build | grep 'not installed')" ]; then
   echo -e "\n\nRPM-build not installed. Installing it.\n\n"
-  sudo yum groupinstall development-tools
+  sudo yum -y groupinstall development-tools
 fi
 
 # Create and setup the ~/rpmbuild directory.
@@ -60,10 +62,16 @@ else
 fi
 
 # Build RPM.
-echo -e "\nBuilding RPM ./rpmbuild/RPMS/x86_64/chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.x86_64.rpm.\n"
+if [ "${ARCH}" == "x86_64" ]; then
+  RPM_ARCH="x86_64"
+elif [ "${ARCH}" == "i386" ]; then
+  RPM_ARCH="i686"
+fi
+
+echo -e "\nBuilding RPM ./rpmbuild/RPMS/${RPM_ARCH}/chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.${RPM_ARCH}.rpm.\n"
 rpmbuild --quiet --define "_topdir $(pwd)/rpmbuild"  --define 'debug_package %{nil}' -bb ./rpmbuild/SPECS/chromium-${CHROMIUM_VERSION}.spec
 
 # Copy generated RPM to this folder.
-echo -e "\nGenerated RPM chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.x86_64.rpm.\n"
-cp rpmbuild/RPMS/x86_64/chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.x86_64.rpm .
+echo -e "\nGenerated RPM chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.${RPM_ARCH}.rpm.\n"
+cp rpmbuild/RPMS/${RPM_ARCH}/chromium-${CHROMIUM_VERSION}-${CHROMIUM_SVN_REVISION}.${RPM_ARCH}.rpm .
 
