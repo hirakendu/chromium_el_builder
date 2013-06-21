@@ -75,6 +75,7 @@ rm -rf depot_tools
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 export PATH="${PATH}:$(pwd)/depot_tools"
 # 2.2. Download Chromium source code from SVN using gclient (in depot_tools).
+export GYP_GENERATORS=make
 echo -e "\n2.2 Downloading the chromium source from SVN, ~1.2 GB (5.4 GB expanded) 20 minutes.\n"
 rm -rf chromium_build
 if [ -f chromium_build.tgz ]; then
@@ -144,10 +145,12 @@ fi
 patch -p1 < ../../patches/title_bar_size.patch
 # 3.2. Configure.
 echo -e "\n3.2. Configuring, ~ 1 minute.\n"
+time gclient runhooks
 time build/gyp_chromium -Dgoogle_api_key="${GOOGLE_API_KEY}" -Dgoogle_default_client_id="${GOOGLE_DEFAULT_CLIENT_ID}" -Dgoogle_default_client_secret="${GOOGLE_DEFAULT_CLIENT_SECRET}" -Dproprietary_codecs=1 -Dffmpeg_branding=Chrome
 # 3.3. Compile.
 echo -e "\n3.3. Compiling, ~80 minutes and expands to 7.4 GB.\n"
 time make -j4 BUILDTYPE=Release V=1 chrome
+
 # 3.4 Package tar.
 echo -e "\n3.4. Packaging tar.\n"
 cd ../../
