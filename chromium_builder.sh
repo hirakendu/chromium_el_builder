@@ -8,10 +8,10 @@
 # to find current stable version, true branch and branch revision.
 # Use the revision lookup tool to verify branch revision.
 if [ -z "${CHROMIUM_VERSION}" ]; then
-  CHROMIUM_VERSION="28.0.1500.36"
+  CHROMIUM_VERSION="28.0.1500.45"
 fi
-# CHROMIUM_SVN_BRANCH="1410"
-# CHROMIUM_SVN_REVISION="192696"
+# CHROMIUM_SVN_BRANCH="1500"
+# CHROMIUM_SVN_REVISION="205727"
 
 # Get API keys (one time) as outlined in https://code.google.com/p/chromium/wiki/LinuxBuildInstructions
 # and https://sites.google.com/a/chromium.org/dev/developers/how-tos/api-keys.
@@ -60,8 +60,11 @@ sudo yum install -y pciutils-devel libpciaccess-devel gnome-keyring-devel libude
 # 1.3. Install speech_dispatcher dependencies from
 # http://li.nux.ro/download/nux/dextop/el6/x86_64/.
 echo -e "\n1.3. Installing speech-dispatcher\n"
-sudo yum install -y speech_dispatcher/*
-
+if [ "${ARCH}" == "x86_64" ]; then
+     sudo yum install -y speech_dispatcher/*.x86_64* speech_dispatcher/*.noarch*
+elif [ "${ARCH}" == "i386" ]; then
+     sudo yum install -y speech_dispatcher/*.i686* speech_dispatcher/*.noarch*
+fi
 
 # 2. Get source code.
 echo -e "\n\n2. Getting chromium source code.\n"
@@ -72,6 +75,7 @@ rm -rf depot_tools
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 export PATH="${PATH}:$(pwd)/depot_tools"
 # 2.2. Download Chromium source code from SVN using gclient (in depot_tools).
+export GYP_GENERATORS=make
 echo -e "\n2.2 Downloading the chromium source from SVN, ~1.2 GB (5.4 GB expanded) 20 minutes.\n"
 rm -rf chromium_build
 if [ -f chromium_build.tgz ]; then
@@ -141,10 +145,12 @@ fi
 patch -p1 < ../../patches/title_bar_size.patch
 # 3.2. Configure.
 echo -e "\n3.2. Configuring, ~ 1 minute.\n"
+time gclient runhooks
 time build/gyp_chromium -Dgoogle_api_key="${GOOGLE_API_KEY}" -Dgoogle_default_client_id="${GOOGLE_DEFAULT_CLIENT_ID}" -Dgoogle_default_client_secret="${GOOGLE_DEFAULT_CLIENT_SECRET}" -Dproprietary_codecs=1 -Dffmpeg_branding=Chrome
 # 3.3. Compile.
 echo -e "\n3.3. Compiling, ~80 minutes and expands to 7.4 GB.\n"
 time make -j4 BUILDTYPE=Release V=1 chrome
+
 # 3.4 Package tar.
 echo -e "\n3.4. Packaging tar.\n"
 cd ../../
